@@ -1,6 +1,7 @@
 package br.com.davilnv.todolist.user;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import br.com.davilnv.todolist.exception.ExceptionBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class UserController {
     public ResponseEntity<?> create(@RequestBody UserModel userModel) {
         var user = this.userRepository.findByUsername(userModel.getUsername());
         if (user != null) {
-            return ResponseEntity.badRequest().body("Usuário já existe!");
+            return ResponseEntity.badRequest().body(new ExceptionBody(ExceptionBody.Status.ERROR, "Usuário já existe!"));
         }
 
         var passwordHash = BCrypt.withDefaults().hashToString(12, userModel.getPassword().toCharArray());
